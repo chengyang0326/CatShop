@@ -1,0 +1,53 @@
+
+<h1>Wishlist</h1>
+<% if @wishlist_item.errors.any? %>
+  <div " alert alert-danger" role="alert" >
+<h4 class="alert-heading"><%= pluralize(@wishlist_item.errors.count, "error") %> prohibited this wishlist item from being saved:</h4>
+    <ul>
+      <% @wishlist_item.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+
+
+<% if @wishlists.present? %>
+  <h2>Wishlist Items</h2>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Product</th>
+        
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @wishlists.each do |wishlist_item| %>
+        <tr>
+          <td><%= wishlist_item.product.name %></td>
+          
+          <td><%= wishlist_item.product.price %></td>
+          <td>
+          <% if wishlist_item.present? %>
+            <%= button_to "Delete", wishlist_path(wishlist_item), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger" %>
+            
+            <%= form_for Cart.new, url: carts_path do |form| %>
+              <%= form.hidden_field :quantity, value: 1, id: 'shared_quantity' %> 
+              <%= form.hidden_field :product_id, value: wishlist_item.product_id %> 
+              <div class="actions">
+                <%= form.submit 'Add to Cart', class: 'btn btn-primary', onclick: "updateQuantity('shared_quantity')" %>
+              </div>
+            <% end %>
+          <% end %>
+
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No wishlist items.</p>
+<% end %>

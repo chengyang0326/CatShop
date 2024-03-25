@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col-md-8">
+    <div class="product-details">
+      <h1><%= @product.name %></h1>
+
+      <div class="description">
+        <strong>Description:</strong>
+        <p><%= @product.description %></p>
+      </div>
+
+      <div class="price">
+        <strong>Price:</strong>
+        <p><%= number_to_currency(@product.price) %></p>
+      </div>
+
+      <% if @product.image.present? %>
+        <%= image_tag @product.image, class: "img-fluid", alt: @product.name %>
+      <% end %>
+
+      <div class="col-md-4 mt-md-auto text-md-end">
+        <% if @product.user == current_user %>
+          <p><%= link_to "Edit #{@product.name}?", product_edit_path(@product), class: "btn btn-secondary" %></p>
+          <p><%= button_to "Destroy #{@product.name}?", product_path(@product), method: :delete, data: { turbo: false }, class: "btn btn-outline-secondary btn-danger", form: { class: "d-inline" } %></p>
+        <% end %>
+      </div>
+        </div>
+      </div>
+
+      <div class="col-md-2 mt-md-auto text-md-start">
+        <p><%= link_to 'Back to Products', products_url, class: 'btn btn-secondary' %></p>
+      </div>
+</div>
+
+<h3> Reviews </h3>
+
+
+<% if @product.review.present? %>
+  <p> Average Rating: <%= @product.average_rating %> </p>
+  <% @product.review.each do |review| %>
+    <p> _________________________</p>
+    <p> <%= review.user.full_name %> | Rated <%= review.rating %>/5 </p>
+    <p> <%= review.text %> </p>
+    <% if review.user == current_user %>
+      <%= link_to 'Edit?', review_edit_path(review), class: 'btn btn-outline-secondary btn-secondary', form: { class: 'd-inline' } %>
+      <%= button_to 'Destroy?', review_destroy_path(@product, review), method: :delete, data: { turbo: false }, class: 'btn btn-outline-secondary btn-warning', form: { class: 'd-inline' } %>
+    <% end %>
+  <% end %>
+<% else %>
+  <p>No reviews for this product.</p>
+<% end %>
+
